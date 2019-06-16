@@ -1,5 +1,4 @@
-(map 1 2 3 )
 
-(map )
-
-(dec "foo")
+(let [x 1]
+  (let [y 1]
+    (map)))
