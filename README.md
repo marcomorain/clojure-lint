@@ -4,6 +4,9 @@
 
 Lints Clojure code using [`clj-kondo`](https://github.com/borkdude/clj-kondo).
 
+![Problems pane](https://user-images.githubusercontent.com/448001/59565149-79ad7780-9047-11e9-9dcf-d8776a2b0814.png)
+
+
 ## Requirements
 
 `clj-kondo` must be on the path.
