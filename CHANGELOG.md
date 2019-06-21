@@ -1,6 +1,6 @@
 # Change Log
 
-## [0.2.1] - 2019-06-21
+## [0.4.0] - 2019-06-21
 ### Changed
 - Improved the documentation and changelog.
 
