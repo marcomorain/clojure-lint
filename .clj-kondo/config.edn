@@ -1,0 +1,5 @@
+{:linters
+ {
+      :unused-binding {:level :info}
+    :invalid-arity {:level :info
+    }}}

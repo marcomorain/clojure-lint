@@ -1,6 +1,19 @@
-import { inspect } from 'util';
-import * as vscode from 'vscode';
 import { execFile } from 'child_process';
+import { inspect } from 'util';
+import { dirname } from 'path';
+import * as vscode from 'vscode';
+
+const welcome =
+	`Clojure Lint extension loaded.
+Please report any issues to https://github.com/marcomorain/clojure-lint/issues`;
+
+const install =
+	`clj-kondo was not found on the path. Please install it following the instructions
+located here: https://github.com/borkdude/clj-kondo/blob/master/doc/install.md"`;
+
+const bug =
+	`An unexpected error occured when running clj-kondo. Please report a bug
+to https://github.com/marcomorain/clojure-lint/issues`;
 
 interface Finding {
 	type: string;
@@ -26,18 +39,20 @@ type NeedInstall = () => void;
 type OtherProblem = (error: Error) => void;
 
 function lint(fileName: string,
+	workingDir: string,
 	onSuccess: OnSuccess,
 	needInstall: NeedInstall,
 	otherProblem: OtherProblem) {
 
 	const command = 'clj-kondo';
 	const args = [
+		// '--cache', https://github.com/borkdude/clj-kondo/issues/285
 		'--config',
 		'{:output {:format :json}}',
 		'--lint',
 		fileName];
 
-	execFile(command, args, {}, (err, stdout, _stderr) => {
+	execFile(command, args, { cwd: workingDir }, (err, stdout, _stderr) => {
 
 		// error can be an `ExecException` or an `Error`.
 		// In those cases, code is a string or a number, depending on the type.
@@ -45,8 +60,12 @@ function lint(fileName: string,
 
 		// Kondo exits with 2 or 3 if there were findings.
 		if (!error || error.code === 2 || error.code === 3) {
-			const results: Results = JSON.parse(stdout);
-			return onSuccess(results);
+			try {
+				const results: Results = JSON.parse(stdout);
+				return onSuccess(results);
+			} catch (error) {
+				return otherProblem(error);
+			}
 		}
 
 		if (error.code === "ENOENT") {
@@ -61,9 +80,9 @@ function severity(level: string): vscode.DiagnosticSeverity {
 	switch (level) {
 		case "error": return vscode.DiagnosticSeverity.Error;
 		case "warning": return vscode.DiagnosticSeverity.Warning;
-		// TODO: more cases
+		case "info": return vscode.DiagnosticSeverity.Information;
 	}
-	return vscode.DiagnosticSeverity.Error;
+	return vscode.DiagnosticSeverity.Information;
 }
 
 function range(finding: Finding): vscode.Range {
@@ -78,6 +97,14 @@ function toDiagnostic(finding: Finding): vscode.Diagnostic {
 		severity: severity(finding.level),
 		range: range(finding)
 	};
+}
+
+function workspaceDirectory(doc: vscode.TextDocument): string {
+	const folder = vscode.workspace.getWorkspaceFolder(doc.uri);
+	if (folder) {
+		return folder.uri.fsPath;
+	}
+	return dirname(doc.uri.fsPath);
 }
 
 async function listener(channel: vscode.OutputChannel,
@@ -96,16 +123,23 @@ async function listener(channel: vscode.OutputChannel,
 		return;
 	}
 
-	const file = doc.fileName;
+	const { languageId, fileName } = doc;
 
-	lint(file,
+	if (languageId !== 'clojure') {
+		return;
+	}
+
+	const workingDir = workspaceDirectory(doc);
+
+	lint(fileName,
+		workingDir,
 		(results) => {
 			diagnostics.set(doc.uri, results.findings.map(toDiagnostic));
-			channel.appendLine('Linted ' + file + ': ' + results.summary.error + ' errors, ' + results.summary.warning + ' warnings');
+			channel.appendLine('Linted ' + fileName + ': ' + results.summary.error + ' errors, ' + results.summary.warning + ' warnings');
 		},
 		needInstall,
 		(error) => {
-			channel.appendLine("Unknown error runnign clj-kondo. Please report a bug.");
+			channel.appendLine(bug);
 			channel.appendLine(inspect(error));
 			diagnostics.delete(doc.uri);
 			channel.show(true);
@@ -113,9 +147,12 @@ async function listener(channel: vscode.OutputChannel,
 }
 
 
+
+
 export function activate(context: vscode.ExtensionContext) {
 	const channel = vscode.window.createOutputChannel('Clojure Lint');
-	channel.appendLine("Extension loaded");
+	channel.appendLine(welcome);
+
 	let diagnostics = vscode.languages.createDiagnosticCollection('clojure');
 	context.subscriptions.push(diagnostics);
 
@@ -126,10 +163,8 @@ export function activate(context: vscode.ExtensionContext) {
 		vscode.workspace.onDidSaveTextDocument(() => {
 			listener(channel, diagnostics, resolve);
 		});
-		channel.appendLine("Extension running");
 	}).then(() => {
-		channel.appendLine("clj-kondo was not found. Please install it.");
-		channel.appendLine("https://github.com/borkdude/clj-kondo/blob/master/doc/install.md");
+		channel.appendLine(install);
 		channel.show(true);
 	});
 }
