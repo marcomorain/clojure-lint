@@ -1,9 +1,15 @@
 # Change Log
 
-All notable changes to the "clojure-lint" extension will be documented in this file.
+## [0.2.0] - 2019-06-21
+### Added
+- Only run on Clojure files.
+### Fixed
+- Only run on Clojure files.
+- Ensure `.clj-kondo/config.edn` is loaded correctly.
 
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
+## [0.1.0] - 2019-06-17
+- Added message telling the user how to install `clj-kondo`.
+- Licensed under GPLv3.
 
-## [Unreleased]
-
-- Initial release
+## [0.0.1] - 2019-06-16
+- First published.
