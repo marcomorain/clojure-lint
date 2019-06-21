@@ -1,5 +1,9 @@
 # Change Log
 
+## [0.2.1] - 2019-06-21
+### Changed
+- Improved the documentation and changelog.
+
 ## [0.2.0] - 2019-06-21
 ### Added
 - Only run on Clojure files.
