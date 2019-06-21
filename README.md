@@ -1,20 +1,18 @@
 # clojure-lint Extension
 
+`clojure-link` is an extension for [VSCode](https://code.visualstudio.com/) that lints Clojure files.
+
 ## Features
 
-Lints Clojure code using [`clj-kondo`](https://github.com/borkdude/clj-kondo).
+The extension lints Clojure and EDN code using [`clj-kondo`](https://github.com/borkdude/clj-kondo).
 
 ![Problems pane](https://user-images.githubusercontent.com/448001/59565149-79ad7780-9047-11e9-9dcf-d8776a2b0814.png)
 
 
 ## Requirements
 
-`clj-kondo` must be on the path.
-
-
-## Known Issues
-
-This is very early, use at your own peril.
+1. `clj-kondo` must be [installed](https://github.com/borkdude/clj-kondo/blob/master/doc/install.md) and available on the `PATH`.
+2. At this time, macOS and Linux are supported. [Runing GraalVM on Windows has some issues](https://github.com/borkdude/clj-kondo/issues/276).
 
 ## Release Notes
 
