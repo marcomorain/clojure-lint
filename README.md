@@ -1,6 +1,6 @@
 # clojure-lint A Clojure Linter For VS Code
 
-`clojure-link` is an extension for [VS Code](https://code.visualstudio.com/) that lints Clojure files.
+`clojure-lint` is an extension for [VS Code](https://code.visualstudio.com/) that lints Clojure files.
 
 ## Features
 
