@@ -86,9 +86,10 @@ function severity(level: string): vscode.DiagnosticSeverity {
 }
 
 function range(finding: Finding): vscode.Range {
-	return new vscode.Range(
-		finding.row - 1, finding.col,
-		finding.row - 1, finding.col);
+	// clj-kondo can report errors on line 0 col 0 when there is an unexpected
+	// error linting.
+	let row = Math.max(0, finding.row - 1);
+	return new vscode.Range(row, finding.col, row, finding.col);
 }
 
 function toDiagnostic(finding: Finding): vscode.Diagnostic {
