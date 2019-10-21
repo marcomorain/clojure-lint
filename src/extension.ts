@@ -1,6 +1,7 @@
 import { execFile } from 'child_process';
 import { inspect } from 'util';
 import { dirname } from 'path';
+import { which }  from 'shelljs';
 import * as vscode from 'vscode';
 
 const welcome =
@@ -44,15 +45,14 @@ function lint(fileName: string,
 	needInstall: NeedInstall,
 	otherProblem: OtherProblem) {
 
-	const command = 'clj-kondo';
-	const args = [
-		// '--cache', https://github.com/borkdude/clj-kondo/issues/285
-		'--config',
-		'{:output {:format :json}}',
-		'--lint',
-		fileName];
+	const command = which('clj-kondo');
 
-	execFile(command, args, { cwd: workingDir }, (err, stdout, _stderr) => {
+	if (!command) {
+		return needInstall();
+	}
+
+	const args = [ '--config', '{:output {:format :json}}', '--lint', fileName];
+	execFile(command.toString(), args, { cwd: workingDir }, (err, stdout, _stderr) => {
 
 		// error can be an `ExecException` or an `Error`.
 		// In those cases, code is a string or a number, depending on the type.
@@ -136,7 +136,7 @@ async function listener(channel: vscode.OutputChannel,
 		workingDir,
 		(results) => {
 			diagnostics.set(doc.uri, results.findings.map(toDiagnostic));
-			channel.appendLine('Linted ' + fileName + ': ' + results.summary.error + ' errors, ' + results.summary.warning + ' warnings');
+			channel.appendLine(`Linted ${fileName}: ${results.summary.error} errors, ${results.summary.warning} warnings`);
 		},
 		needInstall,
 		(error) => {
