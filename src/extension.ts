@@ -1,6 +1,7 @@
 import { execFile } from 'child_process';
 import { inspect } from 'util';
 import { dirname } from 'path';
+import { platform } from 'os';
 import * as vscode from 'vscode';
 
 const welcome =
@@ -44,7 +45,7 @@ function lint(fileName: string,
 	needInstall: NeedInstall,
 	otherProblem: OtherProblem) {
 
-	const command = 'clj-kondo';
+	const command = `clj-kondo${platform() == 'win32' ? '.cmd' : '' }`;
 	const args = [
 		// '--cache', https://github.com/borkdude/clj-kondo/issues/285
 		'--config',
