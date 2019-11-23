@@ -1,5 +1,9 @@
 # Change Log
 
+## [0.6.1] - 2019-11-23
+### Changed
+- Windows is now supported, using [`clj-kondo` v2019.11.23](https://github.com/borkdude/clj-kondo/releases/tag/v2019.11.23).
+
 ## [0.4.0] - 2019-06-21
 ### Changed
 - Improved the documentation and changelog.

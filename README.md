@@ -8,6 +8,10 @@ The extension lints Clojure and EDN code using the [`clj-kondo`](https://github.
 
 ![Problems pane](https://user-images.githubusercontent.com/448001/59565149-79ad7780-9047-11e9-9dcf-d8776a2b0814.png)
 
+## Installation
+
+You can install the extension from the [VisualStudio Marketplace](https://marketplace.visualstudio.com/items?itemName=marcomorain.clojure-lint).
+
 
 ## Requirements
 
