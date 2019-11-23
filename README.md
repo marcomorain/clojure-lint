@@ -12,7 +12,6 @@ The extension lints Clojure and EDN code using the [`clj-kondo`](https://github.
 ## Requirements
 
 1. `clj-kondo` must be [installed](https://github.com/borkdude/clj-kondo/blob/master/doc/install.md) and available on the `PATH`.
-2. At this time, macOS and Linux are supported. [Runing GraalVM on Windows has some issues](https://github.com/borkdude/clj-kondo/issues/276).
 
 ## Contact Us
 
