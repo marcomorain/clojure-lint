@@ -147,9 +147,6 @@ async function listener(channel: vscode.OutputChannel,
 		});
 }
 
-
-
-
 export function activate(context: vscode.ExtensionContext) {
 	const channel = vscode.window.createOutputChannel('Clojure Lint');
 	channel.appendLine(welcome);
@@ -157,7 +154,7 @@ export function activate(context: vscode.ExtensionContext) {
 	let diagnostics = vscode.languages.createDiagnosticCollection('clojure');
 	context.subscriptions.push(diagnostics);
 
-	// If clj-kondo cannt be found, we only want to warn the user once.
+	// If clj-kondo cannot be found, we only want to warn the user once.
 	// Use a promise, which can only be resolved once to get a functional method
 	// to only call a function once.
 	let showInstallMessage = new Promise(function (resolve, _reject) {
